@@ -1,0 +1,46 @@
+* {
+	box-sizing : border-box;
+}
+
+#ilm_container {
+	min-height: 5rem;
+	background-color: #cddc39;
+	padding:10px;
+	margin: 5px;
+}
+
+#ilm_container .ilm_form {
+	border: 1px solid #1e83db;
+	padding:3px;
+	margin-top: 3px;
+}
+
+#ilm_container label[for="marks_list"] {
+	width:10%;
+	vertical-align: top;
+}
+
+#ilm_container .marks_list{
+	width:90%;
+}
+
+#ilm_container .ilm_go_btn {
+	width:100px;
+	height:25px;
+	border: 2px solid #1e83db;
+/*	background-color: ;*/
+	border-radius: 5px;
+	margin-top: 10px ;
+	vertical-align: bottom;
+}
+
+#ilm_container .ilm_msg {
+	padding : 2px;
+	font-weight: bolder;
+	color: red;
+}
+
+.iceInpTxt.isi_base_txtNoteEtu.ilm_target_input {
+	background-color: #cddc39;
+	border: 2px solid red;
+}
