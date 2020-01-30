@@ -7,12 +7,13 @@
 
 const SPACE = ' ';
 const COMMA = ',';
+const NEWLINE = '\n';
 const CHECKED = 'checked';
 // Settings
 const ILM_OPT = {
 	marks_col_label : 'Quiz1', // Label of the table column where marks should be loaded
-	mark_sep : SPACE, // Space as default sep (Excel copy column)
-	marks_list : '1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0', // marks list, space or coma separated
+	mark_sep : NEWLINE, // Newline as default sep (Excel copy column)
+	marks_list : '1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0', // marks list, space, newline or coma separated
 	marks : [], // Final array of marks exploded from marks_list
 };
 
@@ -35,13 +36,15 @@ const LOAD_MARKS_MARKUP = `
 		<input type="text" id="marks_col_label" placeholder="Enter marks column label here" value="${ILM_OPT.marks_col_label}"/>
 		<br/>
 		<label for="mark_sep_space">Marks separator:</label>
+		<label for="mark_sep_newline">Newline</label>
+		<input type="radio" class="mark_sep" name="mark_sep" id="mark_sep_newline" value="NEWLINE" ${ILM_OPT.mark_sep===NEWLINE?CHECKED:''}/>
 		<label for="mark_sep_space">Space</label>
-		<input type="radio" class="mark_sep" name="mark_sep" id="mark_sep_space" value="${SPACE}" ${ILM_OPT.mark_sep===SPACE?CHECKED:''}/>
+		<input type="radio" class="mark_sep" name="mark_sep" id="mark_sep_space" value="SPACE" ${ILM_OPT.mark_sep===SPACE?CHECKED:''}/>
 		<label for="mark_sep_coma">Coma</label>
-		<input type="radio" class="mark_sep" name="mark_sep" id="ilm_mark_sep_coma" value="${COMMA}" ${ILM_OPT.mark_sep===COMMA?CHECKED:''}/>
+		<input type="radio" class="mark_sep" name="mark_sep" id="ilm_mark_sep_coma" value="COMMA" ${ILM_OPT.mark_sep===COMMA?CHECKED:''}/>
 		<br/>
 		<label for="marks_list">Marks list:</label>
-		<textarea id="marks_list" class="marks_list" placeholder="Enter marks here, space or coma separated list" rows="2" value="">${ILM_OPT.marks_list}</textarea>
+		<textarea id="marks_list" class="marks_list" placeholder="Enter marks here, space, newline or coma separated list" rows="2" value="">${ILM_OPT.marks_list}</textarea>
 		<br/>
 		<button id="ilm_go_btn" class="ilm_go_btn">Load marks</button>
 	</div>
@@ -117,15 +120,24 @@ function load_marks() {
 		if (null===mark_sep_radio) {
 			throw new Error(`No marks separator radio checked found.`);
 		}
-		ILM_OPT.mark_sep = mark_sep_radio.value;
-		if (! [SPACE, COMMA].includes(ILM_OPT.mark_sep)) {
-			throw new Error(`Invalid mark separator: (${ILM_OPT.mark_sep}).`);
+		switch (mark_sep_radio.value) {
+			case 'NEWLINE':
+				ILM_OPT.mark_sep = NEWLINE;
+				break;
+			case 'SPACE':
+				ILM_OPT.mark_sep = SPACE;
+				break;
+			case 'COMMA':
+				ILM_OPT.mark_sep = COMMA;
+				break;
+			default:
+				throw new Error(`No checked mark separator radio ?`);
 		}
 		console.log(`Marks separator used : (${ILM_OPT.mark_sep}).`);
 		
 		let ta_marks_list = document.getElementById('marks_list');
 		console.assert(null !== ta_marks_list, `Textarea of marks list not found.`);
-		ILM_OPT.marks_list = ta_marks_list.value;
+		ILM_OPT.marks_list = ta_marks_list.value.trim(ILM_OPT.mark_sep);
 		ILM_OPT.marks = ILM_OPT.marks_list.split(ILM_OPT.mark_sep);
 		if (ILM_OPT.marks.length !== tds.length) {
 			throw new Error(`Count mismatch between marks count (${ILM_OPT.marks.length}) and rows count (${tds.length}).`);
